@@ -1,0 +1,69 @@
+<!--<script src="js/jquery-1.11.0.min.js"></script>-->
+<script src="js/getParameter.js"></script>
+<script>
+   var cid = getParameter("cid");
+  //发送异步请求
+    $.get("index/hotRoute",{cid:cid},function (routes) {
+        // alert(routes.length);
+         var lis='';
+         for (var i=0;i<routes.length;i++){
+             lis+='<li>\n' +
+                 '         <div class="left"><img src="'+routes[i].smallPic+'" alt=""></div>\n' +
+                 '       <a href="route_detail.html?rid='+routes[i].rid+'">\n' +
+                 '         <div class="right">\n' +
+                 '             <p> '+routes[i].rname+'</p>\n' +
+                 '             <p>网付价<span>&yen;<span>'+routes[i].price+'</span>起</span>\n' +
+                 '             </p>\n' +
+                 '         </div>\n' +
+                 '     </li>';
+         }
+        $("#hot").html(lis);
+    });
+</script>
+<aside id="aside">
+
+    <div class="navitem">
+        <ul id="hot">
+            <li>
+                <div class="left"><img src="images/04-search_09.jpg" alt=""></div>
+                <div class="right">
+                    <p> 清远新银盏温泉度假村酒店/自由行套..</p>
+                    <p>网付价<span>&yen;<span>899</span>起</span>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="left"><img src="images/04-search_09.jpg" alt=""></div>
+                <div class="right">
+                    <p> 清远新银盏温泉度假村酒店/自由行套..</p>
+                    <p>网付价<span>&yen;<span>899</span>起</span>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="left"><img src="images/04-search_09.jpg" alt=""></div>
+                <div class="right">
+                    <p> 清远新银盏温泉度假村酒店/自由行套..</p>
+                    <p>网付价<span>&yen;<span>899</span>起</span>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="left"><img src="images/04-search_09.jpg" alt=""></div>
+                <div class="right">
+                    <p>清远新银盏温泉度假村酒店/自由行套222222222.2222222222222222..</p>
+                    <p>网付价<span>&yen;<span>899</span>起</span>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div class="left"><img src="images/04-search_09.jpg" alt=""></div>
+                <div class="right">
+                    <p>清远新银盏温泉度假村酒店/自由行套...</p>
+                    <p>网付价<span>&yen;<span>899</span>起</span>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</aside>

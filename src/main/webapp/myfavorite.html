@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>黑马旅游网-我的收藏</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/common.css">
+        <link rel="stylesheet" href="css/index.css">
+        <script src="js/getParameter.js"></script>
+       <script src="js/jquery-3.3.1.js"></script>
+        <script>
+            $(function () {
+                var uid = getParameter("uid");
+                // alert(uid);
+               load(uid,1)
+            });
+            function load(uid,currentPage) {
+                $.get("route/myFavorite",{uid:uid ,currentPage:currentPage},function (data) {
+                    if (data.flag){
+
+                        /* <div class="col-md-3">
+                                 <a href="route_detail.html">
+                                 <img src="images/collection_pic.jpg" alt="">
+                                 <div class="has_border">
+                                 <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                                 <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                             </div>
+                             </a>
+                             </div>*/
+                        var cmd="";
+                        for (var i=0;i<data.data.list.length;i++){
+                            // alert(i);
+                            // alert(data.data.list[i].rname);
+                            var htr='';
+
+                           htr='<div class="col-md-3">\n' +
+                               '      <a href="route_detail.html?rid='+data.data.list[i].rid+'&uid='+uid+'">\n' +
+                               '          <img src="'+data.data.list[i].rimage+'" alt="">\n' +
+                               '          <div class="has_border">\n' +
+                               '              <h3>'+data.data.list[i].rname+'</h3>\n' +
+                               '              <div class="price">网付价<em>￥</em><strong>'+data.data.list[i].price+'</strong><em>起</em></div>\n' +
+                               '          </div>\n' +
+                               '      </a>\n' +
+                               '   </div>';
+
+                            cmd+=htr;
+                        }
+
+                        $("#row").html(cmd);
+
+                        var begin;//起始的页数
+                        var end;//结束的页数
+                        /*
+                          1.如果总页数不足10页
+                         */
+                        if (data.data.totalPage<10){
+                            begin=1;
+                            end=data.data.totalPage;
+                        }
+                        else {
+                            begin=data.data.currentPage-5;
+                            end=data.data.currentPage+4;
+                            /*
+                            如果前面不足5页
+                             */
+                            if (begin<1){
+                                begin=1;
+                                end=10;
+                            }
+                            /*
+                            如果end大于总页码
+                             */
+                            if(end>data.data.totalPage){
+                                end=data.data.totalPage;
+                                begin=end-9;
+                            }
+                        }
+                        // alert(1);
+
+                        //遍历来添加页数
+
+                        var lis='';
+                            lis+='<li onclick="javascript:load('+uid+',1)"><a href="javascript:load('+uid+',1)">首页</a></li>';
+                        //判断下一页的页码
+                        var before = data.data.currentPage-1;
+                        // 如果小于0 让其置1
+                        if (before<=0){
+                            before=1;
+                        }
+                        lis+='<li onclick="javascript:load('+uid+','+before+')" class="threeword"><a href="javascript:load('+uid+','+before+')">上一页</a></li>';
+                        for (var i = begin; i <= end; i++) {
+                            if (data.data.currentPage==i) {
+                                lis += '<li class="curPage" onclick="javascript:load(' + uid + ',' + i + ')"><a href="javascript:load(' + uid + ',' + i + ')">' + i + '</a></li>';
+                            }
+                            else {
+                                lis += '<li  onclick="javascript:load(' + uid + ',' + i + ')"><a href="javascript:load(' + uid + ',' + i + ')">' + i + '</a></li>';
+
+                            }
+                        }
+                    // <li class="threeword"><a href="javascript:;">下一页</a></li>
+                        //     <li class="threeword"><a href="javascript:;">末页</a></li>
+                        var after = data.data.currentPage+1;
+
+                        // 如果大于最大页面,让其变成最大页数
+                        if (after>=data.data.totalPage){
+                            after=data.data.totalPage;
+                        }
+                        lis+='<li  onclick="javascript:load(' + uid + ',' + after+ ')" class="threeword"><a href="javascript:;">下一页</a></li>';
+                        lis+=' <li onclick="javascript:load(' + uid + ',' + data.data.totalPage+ ')" class="threeword"><a href="javascript:;">末页</a></li>';
+
+                        $("#ul").html(lis)
+
+                    }
+                    else {
+                        $("#l1").html("你还有未有收藏,快去看看吧!!!");
+                        var ul ='';
+                        ul+=' <li><a href="">首页</a></li>\n' +
+                            '  <li class="threeword"><a href="#">上一页</a></li>';
+                        ul+='  <li class="threeword"><a href="javascript:;">下一页</a></li>\n' +
+                            '  <li class="threeword"><a href="javascript:;">末页</a></li>';
+                        $("#ul").html(ul);
+                    }
+                })
+            }
+        </script>
+       <style>
+           .tab-content .row>div {
+            margin-top: 16px;
+           }
+           .tab-content {
+            margin-bottom: 36px;
+           }
+       </style>
+    </head>
+    <body>
+    <!--引入头部-->
+    <div id="header"></div>
+         <!-- 排行榜 start-->
+        <section id="content">            
+            <section class="hemai_jx">
+                <div class="jx_top">
+                    <div class="jx_tit">
+                        <img src="images/icon_5.jpg" alt="">
+                        <span>我的收藏</span>
+                    </div>                    
+                </div>
+                <div class="jx_content">
+                    <!-- Tab panes -->
+                    <div class="tab-content" id="l1">
+                        <div role="tabpanel" class="tab-pane active" id="home">
+                            <div class="row" id="row">
+                                <div class="col-md-3">
+                                    <a href="route_detail.html">
+                                        <img src="images/collection_pic.jpg" alt="">
+                                        <div class="has_border">
+                                            <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                                            <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="route_detail.html">
+                                        <img src="images/collection_pic.jpg" alt="">
+                                        <div class="has_border">
+                                            <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                                            <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="route_detail.html">
+                                        <img src="images/collection_pic.jpg" alt="">
+                                        <div class="has_border">
+                                            <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                                            <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="route_detail.html">
+                                        <img src="images/collection_pic.jpg" alt="">
+                                        <div class="has_border">
+                                            <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                                            <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="route_detail.html">
+                                        <img src="images/collection_pic.jpg" alt="">
+                                        <div class="has_border">
+                                            <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                                            <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="route_detail.html">
+                                        <img src="images/collection_pic.jpg" alt="">
+                                        <div class="has_border">
+                                            <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                                            <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="route_detail.html">
+                                        <img src="images/collection_pic.jpg" alt="">
+                                        <div class="has_border">
+                                            <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                                            <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="route_detail.html">
+                                        <img src="images/collection_pic.jpg" alt="">
+                                        <div class="has_border">
+                                            <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                                            <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                 <div class="col-md-3">
+                                    <a href="route_detail.html">
+                                        <img src="images/collection_pic.jpg" alt="">
+                                        <div class="has_border">
+                                            <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                                            <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="route_detail.html">
+                                        <img src="images/collection_pic.jpg" alt="">
+                                        <div class="has_border">
+                                            <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                                            <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="route_detail.html">
+                                        <img src="images/collection_pic.jpg" alt="">
+                                        <div class="has_border">
+                                            <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                                            <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="jroute_detail.html">
+                                        <img src="images/collection_pic.jpg" alt="">
+                                        <div class="has_border">
+                                            <h3>上海直飞三亚5天4晚自由行(春节预售+亲子/蜜月/休闲游首选+豪华酒店任选+接送机)</h3>
+                                            <div class="price">网付价<em>￥</em><strong>889</strong><em>起</em></div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>                       
+                    </div>
+                </div>
+                <div class="pageNum">
+                    <ul id="ul">
+                        <li><a href="">首页</a></li>
+                        <li class="threeword"><a href="#">上一页</a></li>
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">6</a></li>
+                        <li><a href="#">7</a></li>
+                        <li><a href="#">8</a></li>
+                        <li><a href="#">9</a></li>
+                        <li><a href="#">10</a></li>
+                        <li class="threeword"><a href="javascript:;">下一页</a></li>
+                        <li class="threeword"><a href="javascript:;">末页</a></li>
+                    </ul>
+                </div>
+            </section>                      
+        </section>
+        <!-- 排行榜 end-->
+    	
+         <!--引入尾部-->
+    	<div id="footer"></div>
+        <!--导入布局js，共享header和footer-->
+        <script type="text/javascript" src="js/include.js"></script>
+
+    </body>
+</html>
